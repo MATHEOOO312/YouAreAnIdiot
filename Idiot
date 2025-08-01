@@ -1,0 +1,137 @@
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "YourAreAnIdiot[IDIOT]"
+gui.ResetOnSpawn = false
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 400, 0, 250)
+frame.Position = UDim2.new(0, 20, 0, 20)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BorderSizePixel = 0
+
+local image = Instance.new("ImageLabel", frame)
+image.Size = UDim2.new(0, 100, 0, 100)
+image.Position = UDim2.new(0, 20, 0, 20)
+image.BackgroundTransparency = 1
+image.Image = "rbxassetid://1843521454"
+
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, -140, 0, 50)
+title.Position = UDim2.new(0, 130, 0, 20)
+title.BackgroundTransparency = 1
+title.Text = "You Are An IDIOT!"
+title.TextColor3 = Color3.fromRGB(255, 0, 0)
+title.TextScaled = true
+title.Font = Enum.Font.Arcade
+
+local button = Instance.new("TextButton", frame)
+button.Size = UDim2.new(0, 200, 0, 40)
+button.Position = UDim2.new(0.5, -100, 1, -60)
+button.Text = "Activate IDIOT MODE"
+button.TextScaled = true
+button.Font = Enum.Font.SourceSansBold
+button.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+button.TextColor3 = Color3.new(1, 1, 1)
+button.BorderSizePixel = 0
+
+local function playGlitchSounds()
+	local sound = Instance.new("Sound", workspace)
+	sound.SoundId = "rbxassetid://1843521454"
+	sound.Volume = 10
+	sound.Looped = true
+	sound:Play()
+end
+
+local function spawnIdiotWindows()
+	for i = 1, 25 do
+		local win = frame:Clone()
+		win.Parent = gui
+		win.Position = UDim2.new(0, math.random(0, 800), 0, math.random(0, 500))
+		local btn = win:FindFirstChildOfClass("TextButton")
+		if btn then
+			btn.Visible = false
+			btn.BorderSizePixel = 0
+		end
+		win.BorderSizePixel = 0
+		win.BackgroundColor3 = Color3.fromRGB(0,0,0)
+	end
+end
+
+local function startFlashEffect()
+	local blackout = Instance.new("Frame", gui)
+	blackout.Size = UDim2.new(1, 0, 1, 0)
+	blackout.Position = UDim2.new(0, 0, 0, 0)
+	blackout.BackgroundColor3 = Color3.new(0, 0, 0)
+	blackout.ZIndex = 999
+
+	local warning = Instance.new("TextLabel", blackout)
+	warning.Size = UDim2.new(1, 0, 1, 0)
+	warning.BackgroundTransparency = 1
+	warning.Text = "YOU ARE AN IDIOT"
+	warning.TextColor3 = Color3.new(1, 0, 0)
+	warning.TextScaled = true
+	warning.Font = Enum.Font.Arcade
+	warning.ZIndex = 1000
+
+	local flashInfo = TweenInfo.new(0.25, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1, true)
+	TweenService:Create(blackout, flashInfo, {BackgroundColor3 = Color3.fromRGB(255, 0, 0)}):Play()
+	TweenService:Create(warning, flashInfo, {TextColor3 = Color3.fromRGB(0, 0, 0)}):Play()
+
+	local amplitude = 10
+	local basePos = warning.Position
+	RunService.RenderStepped:Connect(function()
+		if warning and warning.Parent then
+			local offsetX = math.random(-amplitude, amplitude)
+			local offsetY = math.random(-amplitude, amplitude)
+			warning.Position = basePos + UDim2.new(0, offsetX, 0, offsetY)
+		end
+	end)
+end
+
+local function crazyCounter()
+	local count = 0
+	local label = Instance.new("TextLabel", gui)
+	label.Size = UDim2.new(0, 300, 0, 100)
+	label.Position = UDim2.new(0.5, -150, 0.7, -50)
+	label.BackgroundTransparency = 1
+	label.TextColor3 = Color3.new(1, 0, 0)
+	label.TextScaled = true
+	label.Font = Enum.Font.Arcade
+	label.ZIndex = 1000
+
+	spawn(function()
+		while true do
+			count += math.random(100, 9999)
+			label.Text = "COUNT: " .. tostring(count)
+			wait(0.05)
+		end
+	end)
+end
+
+local function idiotifyChat()
+	local starterGui = game:GetService("StarterGui")
+	for i = 1, 15 do
+		starterGui:SetCore("ChatMakeSystemMessage", {
+			Text = "You Are An IDIOT!";
+			Color = Color3.fromRGB(255, 0, 0);
+			Font = Enum.Font.SciFi;
+			FontSize = Enum.FontSize.Size96;
+		})
+	end
+end
+
+button.MouseButton1Click:Connect(function()
+	for _, v in pairs(gui:GetChildren()) do
+		if v:IsA("GuiObject") then
+			v.Visible = false
+		end
+	end
+
+	playGlitchSounds()
+	spawnIdiotWindows()
+	startFlashEffect()
+	idiotifyChat()
+	crazyCounter()
+end)
